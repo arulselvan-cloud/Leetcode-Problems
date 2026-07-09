@@ -1,0 +1,119 @@
+class Solution {
+    public boolean canPartition(int[] nums) {
+        int sum=0;
+        for(int i=0;i<nums.size();i++)
+        {
+            sum+=nums[i];
+        }
+        if(sum%2!=0||n==1)
+        {
+            return false;
+        }
+        else
+        {
+            int target=sum/2;
+            vector<bool>dp(target+ 1,false);
+            dp[0]=true;
+
+            for(int i=0;i<nums.size();i++)
+            {
+                for(int j=target;j>=nums[i];j--)
+                {
+                    if(dp[j - nums[i]])
+                    {
+                        dp[j]=true;
+                    }
+                }
+            }
+            return dp[target];
+        }
+    }
+}
+
+
+Explaination:
+Here is the step-by-step logic for the else block to figure out if a subset matches exactly half the sum:
+
+Find the Target: Divide your total sum by 2. This is the exact number your subset needs to add up to.
+
+Create a Tracker: Initialize a boolean array (often called dp) with a size of target + 1. This array will keep track of which sums are possible to build. Set all values to false initially.
+
+Base Case: Set dp[0] to true. A sum of 0 is always possible by simply picking zero elements.
+
+Iterate Through the Numbers: Start a loop to go through every number in your input array.
+
+Iterate Backwards for the Sum: Inside that first loop, start a second loop that counts backwards from your target down to the current number you are evaluating. Counting backwards prevents you from using the same number more than once.
+
+Update the Tracker: Check if dp[current_sum - current_number] is true. If it is, that means you can form the current_sum by adding your current_number to it. Update dp[current_sum] to true.
+
+Return the Result: After both loops finish, your answer will be sitting at the very end of your tracker array. Return dp[target].
+
+Step by step :
+The Core Concept in Plain English
+When you look at the line if (dp[j - nums[i]]) dp[j] = true;, ask yourself this question:
+
+"Can I reach my current target sum (j)? Well, if I take my current number (nums[i]) and look backward by that exact amount... was that smaller sum possible? If yes, I just add my current number to it, and boom, I've reached my new target."
+
+Visualization Example
+Let's use a brand new, simple array: nums = [1, 3, 4]
+
+Total Sum: 1 + 3 + 4 = 8
+
+Target Sum: 8 / 2 = 4
+
+We create a dp array of size 5 (indices 0 through 4) to track all possible sums up to our target.
+
+Initial State: [True, False, False, False, False]
+(Index 0 is True because a sum of 0 is always possible if we pick nothing).
+
+Iteration 1: Current Number = 1
+We loop backward from our target (4) down to our current number (1).
+
+Check j = 4: Look back by 1. Is dp[3] True? No. dp[4] stays False.
+
+Check j = 3: Look back by 1. Is dp[2] True? No. dp[3] stays False.
+
+Check j = 2: Look back by 1. Is dp[1] True? No. dp[2] stays False.
+
+Check j = 1: Look back by 1. Is dp[0] True? Yes!
+
+Because dp[0] is True, we can add our current number 1 to it.
+
+dp[1] becomes True.
+
+Array Status after processing '1':
+[True, True, False, False, False]
+(Meaning: We can currently make a sum of 0 and a sum of 1)
+
+Iteration 2: Current Number = 3
+We loop backward from our target (4) down to our current number (3).
+
+Check j = 4: Look back by 3. Is dp[1] True? Yes! (We just made it True in the last step).
+
+Because we know we can make a sum of 1, and we have a 3 in our hand, we can make 4.
+
+dp[4] becomes True.
+
+Check j = 3: Look back by 3. Is dp[0] True? Yes! * Because we can make a sum of 0, and we have a 3, we can make 3.
+
+dp[3] becomes True.
+
+Array Status after processing '3':
+[True, True, False, True, True]
+(Meaning: We can make sums of 0, 1, 3, and 4)
+
+Iteration 3: Current Number = 4
+We loop backward from our target (4) down to our current number (4).
+
+Check j = 4: Look back by 4. Is dp[0] True? Yes!
+
+dp[4] is already True, but this confirms we can also reach it just by using the number 4 alone.
+
+Final Array Status:
+[True, True, False, True, True]
+
+The Result
+We look at the very last slot: dp[target], which is dp[4]. Because it is True, we know we can perfectly partition this array, and we return true.
+
+Why loop backwards?
+If we looped forwards, we would accidentally use the same number multiple times. By going from the target down to the current number, we ensure that when we check dp[j - nums[i]], we are looking at a sum that was created by the previous numbers in the array, not the one we are currently holding.
