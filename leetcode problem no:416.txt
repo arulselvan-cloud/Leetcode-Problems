@@ -1,3 +1,4 @@
+Java Solution:
 class Solution {
     public boolean canPartition(int[] nums) {
         int sum=0;
@@ -31,10 +32,43 @@ class Solution {
 }
 
 
+C++ solution:
+#include <vector>
+using namespace std;
+
+class Solution {
+public:
+    bool canPartition(vector<int>& nums) {
+        if (nums.size() <= 1) return false;
+        
+        int sum = 0;
+        for (int num : nums) sum += num;
+        
+        if (sum % 2 != 0) return false;
+        
+        int target = sum / 2;
+        vector<bool> dp(target + 1, false);
+        dp[0] = true;
+        
+        for (int num : nums) {
+            for (int i = target; i >= num; i--) {
+                if (dp[i - num]) dp[i] = true;
+            }
+        }
+        
+        return dp[target];
+    }
+};
+
+
 Explaination:
 Here is the step-by-step logic for the else block to figure out if a subset matches exactly half the sum:
 
 Find the Target: Divide your total sum by 2. This is the exact number your subset needs to add up to.
+
+If the sum is odd u can directly return false as the sum cannot be divided into two equal so no two subarrays can have the sum.
+
+Else if the the size of Array is 1 u can directly return false as it cannot be partitioned.
 
 Create a Tracker: Initialize a boolean array (often called dp) with a size of target + 1. This array will keep track of which sums are possible to build. Set all values to false initially.
 
