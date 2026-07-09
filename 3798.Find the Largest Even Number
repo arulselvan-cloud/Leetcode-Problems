@@ -1,0 +1,58 @@
+C++ solution:
+class Solution {
+public:
+    string largestEven(string s) {
+        // Find the index of the very last '2' in the string
+        int lastTwoIdx = s.rfind('2');
+        
+        // If there are no '2's, it's impossible to make an even number
+        if (lastTwoIdx == string::npos) {
+            return "";
+        }
+        
+        // Return everything from the start up to and including the last '2'
+        return s.substr(0, lastTwoIdx + 1);
+    }
+};
+
+Here is how the code processes it step-by-step:
+
+1. int lastTwoIdx = s.rfind('2');
+The rfind() function starts at the very end of the string (the right side) and scans leftwards looking for the first '2' it sees. Let's look at the indexes of our string:
+
+Index 0: '1'
+
+Index 1: '2'
+
+Index 2: '1'
+
+Index 3: '1'
+
+Index 4: '2' <-- It stops here!
+
+Index 5: '1'
+
+Index 6: '1'
+
+Because it scans from right to left, it ignores the '1's at indexes 6 and 5, and hits the '2' at index 4.
+So, lastTwoIdx is now set to 4.
+
+2. if (lastTwoIdx == string::npos)
+This checks if we actually found a '2'.
+If our input had been "1111", rfind() wouldn't have found anything and would return string::npos (meaning "not found"). The code would then return "".
+
+Since our lastTwoIdx is 4, we skip this if block.
+
+3. return s.substr(0, lastTwoIdx + 1);
+Now we need to slice the string to keep everything up to that last '2'.
+
+The substr() function takes two arguments: (starting_index, length_of_substring).
+
+Starting index: 0 (we want to start at the very beginning of the string to keep the number as large as possible).
+
+Length: lastTwoIdx + 1. Since our '2' is at index 4, we need a length of 5 characters to ensure we actually include the '2' itself (indexes 0, 1, 2, 3, and 4).
+
+The code evaluates to s.substr(0, 5).
+It grabs the first 5 characters of "1211211", throwing away the odd '1's at the end.
+
+Final Output: "12112"
