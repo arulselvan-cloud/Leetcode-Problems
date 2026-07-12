@@ -1,0 +1,93 @@
+C++ SOLUTION:
+class Solution {
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if (head == nullptr) return head;
+        
+        ListNode dummy(0);
+        ListNode* curr = &dummy;
+        ListNode* temp = head;
+        
+        while (temp != NULL) {
+            // We only add the node to our new list if it's the LAST node of its kind.
+            // This happens if it's the very last node in the list (temp->next == NULL)
+            // OR if its value is different from the next node's value.
+            if (temp->next == NULL || temp->val != temp->next->val) {
+                curr->next = temp;  // Link the actual node, not its integer value
+                curr = curr->next;  // Move our builder pointer forward
+            }
+            
+            temp = temp->next;      // Always move temp forward
+        }
+        
+        // CRITICAL: We must cut off the end of our new list! 
+        // Otherwise, it might still be pointing to trailing duplicates.
+        curr->next = NULL;
+        
+        // Return dummy.next because dummy itself is just our starting placeholder
+        return dummy.next; 
+    }
+};
+
+EXPLAINATION:
+Example 1 from your screen: head = [1, 1, 2].
+
+To make it easier to track, let's call the first one 1(a) and the second one 1(b).
+
+The Setup
+Before the loop starts, here is where our pointers are:
+
+dummy is a fake starting node with value 0.
+
+curr points to dummy. We will use curr to build our new, clean list.
+
+temp points to the start of the original list: 1(a) -> 1(b) -> 2.
+
+Step-by-Step Execution
+Iteration 1: temp is at 1(a)
+
+The Check: The code asks, "Is temp the last node (temp->next == NULL) OR is its value different from the next node (1 != 1)?"
+
+The Result: Both are False. Because the current value (1) matches the next value (1), we know this is a duplicate. We don't want to keep it.
+
+Action: The if block is skipped. temp simply moves forward to 1(b).
+
+Current New List: dummy(0)
+
+Iteration 2: temp is at 1(b)
+
+The Check: The code asks, "Is temp the last node OR is its value different from the next node (1 != 2)?"
+
+The Result: True! Because 1 is not equal to 2, we know this 1(b) is the very last 1 in the duplicate group. This is the one we want to keep.
+
+Action: * curr->next = temp; (We link our new list to 1(b)).
+
+curr = curr->next; (We move our builder pointer forward to sit on 1(b)).
+
+temp = temp->next; (temp moves forward to 2).
+
+Current New List: dummy(0) -> 1(b)
+
+Iteration 3: temp is at 2
+
+The Check: The code asks, "Is temp the last node (temp->next == NULL) OR is its value different from the next node?"
+
+The Result: True! Because 2 is the very last node in the list, temp->next is NULL.
+
+Action:
+
+curr->next = temp; (We link our new list to 2).
+
+curr = curr->next; (We move our builder pointer forward to sit on 2).
+
+temp = temp->next; (temp moves forward to NULL).
+
+Current New List: dummy(0) -> 1(b) -> 2
+
+The Cleanup
+Now that temp is NULL, the while loop finishes.
+
+curr->next = NULL; We execute this critical step. Since curr is currently sitting on 2, this explicitly tells the computer, "The list ends here." (If we didn't do this, and our original list was [1, 2, 2], the 2 we kept might still be secretly pointing to the discarded duplicate 2).
+
+return dummy.next;
+We return the node immediately after our fake starting point. dummy.next points to 1(b), so the computer receives 1 -> 2, which is the correct answer!
