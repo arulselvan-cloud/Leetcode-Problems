@@ -1,0 +1,115 @@
+JAVA SOLUTION:
+CONCETANATION METHOD:
+class Solution {
+    public boolean rotateString(String s, String goal) {
+        return s.length() == goal.length() && (s + s).contains(goal);
+    }
+}
+OR
+class Solution {
+    public boolean rotateString(String s, String goal) {
+        // 1. If the lengths don't match, they can't be rotations
+        if (s.length() != goal.length()) {
+            return false;
+        }
+        
+        // 2. Concatenate the string with itself
+        String doubled = s + s;
+        
+        // 3. Check if the goal is inside the doubled string
+        return doubled.contains(goal);
+    }
+}
+
+EXPLAINATION:
+Method 1: The Concatenation Trick
+This method relies on a clever mathematical property of strings: if you append a string to itself, the resulting string will inherently contain every single possible rotation of the original string as a continuous substring.
+
+Walkthrough:
+
+Check Lengths: First, we confirm s and goal are the same length (both are 5). This ensures we aren't looking at a string that just happens to have the same letters but is too long or short.
+
+Double the String: We concatenate s with itself.
+
+doubled = s + s
+
+doubled = "abcde" + "abcde"
+
+doubled = "abcdeabcde"
+
+Search: We simply ask Java if goal ("cdeab") exists anywhere inside doubled. Let's look at doubled:
+
+abcdeabcde
+
+Because "cdeab" is right there in the middle of the doubled string, .contains() immediately spots it and returns true. It bypasses the need for manual loops entirely, letting Java's highly optimized internal search functions do the heavy lifting.
+
+C++ SOLUTION:
+MANUAL ROTATION METHOD:
+class Solution {
+public:
+    bool rotateString(string s, string goal) {
+        // 1. Initial Check: If the strings are different lengths, 
+        // no amount of rotation will ever make them match.
+        if (s.length() != goal.length()) return false; 
+        
+        // 2. Store the length of the string so we can use it throughout the loops
+        int n = s.length(); 
+        
+        // 3. Loop through every possible starting index (0 to n-1)
+        for(int i = 0; i < n; i++) {
+            int start = i;   // 'start' tracks the current index as we build the rotated string
+            string res = ""; // 'res' will hold the newly built rotated string for this specific loop
+            
+            // 4. Keep adding characters until our new string is the same length as the original
+            while(res.length() < s.length()) {
+                
+                // If 'start' is still within the normal bounds of the string, just add the character
+                if(start < n) {
+                    res += s[start];
+                } 
+                // If 'start' reaches or exceeds the length of the string, we need to wrap around
+                else {
+                    start = start % s.size(); // The modulo operator brings the index back to 0
+                    res += s[start];
+                }
+                
+                // Move to the next index position for the next run of the while loop
+                start++; 
+            }
+            
+            // 5. Check if the newly built string matches the target 'goal'
+            // If it does, we found a valid rotation and can stop searching!
+            if(res == goal) return true; 
+        }
+        
+        // 6. If we tried building a string from every single starting position 
+        // and none of them matched the goal, it's impossible.
+        return false;
+    }
+};
+
+EXPLAINATION:
+Method 2: Manual Rotation (The Modulo Approach)
+This method is all about manually simulating the shifting process. You pick a starting index, read characters one by one until you hit the length of the string, and use the modulo operator (%) to "wrap around" to the beginning when you reach the end.
+
+How the Modulo (%) wrap-around works:
+If your index goes out of bounds (like index 5 in a string of length 5), dividing by the length and taking the remainder brings you back to 0.
+
+5 % 5 = 0 (Wraps back to the first character)
+
+6 % 5 = 1 (Wraps back to the second character)
+
+Walkthrough:
+Let's say your for loop reaches i = 2 (which corresponds to the letter 'c').
+
+Step 1: start = 2. 2 < 5, so we add s[2] to our result. res = "c"
+
+Step 2: start = 3. 3 < 5, so we add s[3]. res = "cd"
+
+Step 3: start = 4. 4 < 5, so we add s[4]. res = "cde"
+
+Step 4: start = 5. 5 is NOT less than 5. We use modulo: 5 % 5 = 0. We add s[0]. res = "cdea"
+
+Step 5: start = 6. We use modulo: 6 % 5 = 1. We add s[1]. res = "cdeab"
+
+The loop finishes building the word, checks if "cdeab" == goal, and returns true.
