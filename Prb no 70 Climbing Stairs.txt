@@ -1,0 +1,425 @@
+C++ SOLUTION:
+class Solution {
+public:
+    int stairs(int n,vector<int>&dp)
+    {
+        if(n<=2)return n;
+        if(dp[n]!=-1)return dp[n];
+        return dp[n]=stairs(n - 1,dp)+stairs(n- 2,dp);
+    }
+    int climbStairs(int n) {
+        vector<int>dp(n+ 1,-1);
+        return stairs(n,dp);
+    }
+};
+MESMORISATION METHOD IN C++ EXPLAINATION:
+Climbing Stairs – Memoization Approach
+Idea
+
+In the recursive solution, the same subproblems are solved multiple times.
+
+For example:
+
+                climb(5)
+               /        \
+        climb(4)      climb(3)
+        /      \      /      \
+ climb(3) climb(2) climb(2) climb(1)
+
+Here,
+
+climb(3) is calculated twice.
+climb(2) is calculated three times.
+
+This repeated computation wastes time.
+
+Solution: Store the answer the first time it is calculated and reuse it whenever needed.
+
+Step 1: Create a DP Array
+vector<int> dp(n + 1, -1);
+
+Initially,
+
+Suppose n = 5
+
+Index : 0   1   2   3   4   5
+dp    : -1 -1 -1 -1 -1 -1
+
+Here,
+
+-1 means not calculated yet.
+Step 2: Base Cases
+if(n==1)
+    return 1;
+
+if(n==2)
+    return 2;
+Step 3: Check if Already Computed
+
+Before solving,
+
+if(dp[n] != -1)
+    return dp[n];
+
+Meaning:
+
+"If I've already calculated the answer for n, don't calculate it again."
+
+Step 4: Store the Answer
+
+If it isn't already stored,
+
+dp[n] = climb(n-1, dp) + climb(n-2, dp);
+
+Store it in the array.
+
+
+JAVA SOLUTION:
+Iterative Approach:
+class Solution {
+    public int climbStairs(int n) {
+        if(n<=2)return n;
+       int[]dp=new int[n+ 1];
+        dp[1]=1;
+        dp[2]=2;
+        for(int i=3;i<=n;i++)
+        {
+            dp[i]=dp[i - 1]+dp[i- 2];
+        }
+        return dp[n];
+    }
+}
+
+EXPLAINATION:
+Climbing Stairs – Iterative (Tabulation) Approach
+(Complete Notes with Visualization)
+Problem Statement
+
+You are climbing a staircase with n steps.
+
+At each move, you can climb:
+
+1 step
+2 steps
+
+Find the total number of distinct ways to reach the top.
+
+Key Observation
+
+Suppose we want to reach step n.
+
+How can we reach it?
+
+There are only two possibilities:
+
+From step (n-1) by taking 1 step
+From step (n-2) by taking 2 steps
+
+Therefore,
+
+Ways(n) = Ways(n-1) + Ways(n-2)
+
+This is exactly the same recurrence as the Fibonacci sequence.
+
+What is the Iterative (Tabulation) Approach?
+
+Instead of solving the problem from the top (n) using recursion,
+
+we solve it from the bottom (1) and gradually build the answer.
+
+Think of it like building a staircase one step at a time.
+
+Instead of asking:
+
+"How many ways are there to reach step 5?"
+
+we ask:
+
+"I already know step 1 and step 2. Can I use them to calculate step 3? Then step 4? Then step 5?"
+
+Step 1 : Create a DP Array
+
+Suppose
+
+n = 5
+
+Create an array
+
+vector<int> dp(n+1);
+
+Initially
+
+Index : 0   1   2   3   4   5
+
+dp    : 0   0   0   0   0   0
+
+Each position stores
+
+dp[i] = Number of ways to reach step i
+Step 2 : Store the Base Cases
+
+We already know
+
+1 step → only 1 way
+
+2 steps → 2 ways
+
+So,
+
+dp[1]=1;
+dp[2]=2;
+
+Now
+
+Index : 0   1   2   3   4   5
+
+dp    : 0   1   2   0   0   0
+
+Notice that
+
+Only the first two answers are known.
+
+Everything else is still empty.
+
+Step 3 : Calculate the Remaining Values
+
+We already know
+
+Ways(n)=Ways(n-1)+Ways(n-2)
+
+Therefore
+
+for(int i=3;i<=n;i++)
+{
+    dp[i]=dp[i-1]+dp[i-2];
+}
+
+This loop fills the table one position at a time.
+
+Dry Run (n = 5)
+
+Initially
+
+Index : 0   1   2   3   4   5
+
+dp    : 0   1   2   0   0   0
+Iteration 1
+i = 3
+
+Need
+
+dp[2]
+
+and
+
+dp[1]
+
+Visualization
+
+             i
+
+Index : 0   1   2   3   4   5
+        ------------------------
+dp    : 0   1   2   ?   0   0
+            ↑   ↑
+         dp[1] dp[2]
+
+Now calculate
+
+dp[3]=dp[2]+dp[1]
+
+=2+1
+
+=3
+
+Store it
+
+Index : 0   1   2   3   4   5
+
+dp    : 0   1   2   3   0   0
+
+Now we know
+
+There are 3 ways to reach step 3.
+
+Iteration 2
+i = 4
+
+Visualization
+
+                 i
+
+Index : 0   1   2   3   4   5
+        ------------------------
+dp    : 0   1   2   3   ?   0
+                ↑   ↑
+             dp[2] dp[3]
+
+Calculate
+
+dp[4]
+
+=dp[3]+dp[2]
+
+=3+2
+
+=5
+
+Store it
+
+Index : 0   1   2   3   4   5
+
+dp    : 0   1   2   3   5   0
+
+Now we know
+
+There are 5 ways to reach step 4.
+
+Iteration 3
+i = 5
+
+Visualization
+
+                     i
+
+Index : 0   1   2   3   4   5
+        ------------------------
+dp    : 0   1   2   3   5   ?
+                    ↑   ↑
+                 dp[3] dp[4]
+
+Calculate
+
+dp[5]
+
+=dp[4]+dp[3]
+
+=5+3
+
+=8
+
+Store it
+
+Index : 0   1   2   3   4   5
+
+dp    : 0   1   2   3   5   8
+
+Answer
+
+dp[5]=8
+Final DP Table
+Step
+
+1 → 1
+
+2 → 2
+
+3 → 3
+
+4 → 5
+
+5 → 8
+
+Or as an array
+
+Index : 0   1   2   3   4   5
+
+dp    : 0   1   2   3   5   8
+Why Does This Work?
+
+Every new answer depends only on the previous two answers.
+
+dp[3]=dp[2]+dp[1]
+
+dp[4]=dp[3]+dp[2]
+
+dp[5]=dp[4]+dp[3]
+
+dp[6]=dp[5]+dp[4]
+
+Since we calculate from left to right,
+
+the required values are already available.
+
+Unlike recursion, no problem is solved more than once.
+
+Complete Code
+class Solution {
+public:
+    int climbStairs(int n) {
+
+        if(n <= 2)
+            return n;
+
+        vector<int> dp(n + 1);
+
+        dp[1] = 1;
+        dp[2] = 2;
+
+        for(int i = 3; i <= n; i++)
+        {
+            dp[i] = dp[i-1] + dp[i-2];
+        }
+
+        return dp[n];
+    }
+};
+Time Complexity
+
+The loop runs from
+
+3 → n
+
+Each iteration performs one addition.
+
+Therefore,
+
+Time Complexity = O(n)
+Space Complexity
+
+The DP array stores
+
+n+1
+
+elements.
+
+Therefore,
+
+Space Complexity = O(n)
+Comparison of All Approaches
+Approach	Idea	Time	Space
+Recursion	Solves from top to bottom, repeatedly solving the same subproblems	O(2ⁿ)	O(n)
+Memoization	Recursion + stores previously computed answers	O(n)	O(n)
+Tabulation (Iterative)	Starts from the smallest subproblems and builds up to the final answer	O(n)	O(n)
+Space Optimized	Stores only the previous two answers instead of the entire DP array	O(n)	O(1)
+Easy Way to Remember
+
+Imagine filling a notebook.
+
+Step 1 → I know the answer.
+
+↓
+
+Step 2 → I know the answer.
+
+↓
+
+Step 3 → Use Step 1 and Step 2.
+
+↓
+
+Step 4 → Use Step 2 and Step 3.
+
+↓
+
+Step 5 → Use Step 3 and Step 4.
+
+↓
+
+Continue until Step n.
+
+You are building the solution from the bottom up, which is why this method is called Bottom-Up Dynamic Programming (Tabulation).
+
+Interview/Exam Conclusion
+
+The iterative (tabulation) approach avoids the repeated calculations of recursion by storing the answers to all smaller subproblems in a DP array. Starting from the base cases (dp[1] = 1 and dp[2] = 2), it computes each subsequent value using the recurrence relation dp[i] = dp[i-1] + dp[i-2]. Since each subproblem is solved exactly once, the algorithm runs in O(n) time with O(n) auxiliary space. This bottom-up approach is more efficient than plain recursion and is a standard Dynamic Programming technique.
