@@ -1,0 +1,84 @@
+=========================================================
+MAXIMUM SUBARRAY - KADANE'S ALGORITHM EXPLANATION
+=========================================================
+C++ SOLUTION:
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int max_sum = INT_MIN; // Keeps track of the best sum overall
+        int current_sum = 0;   // Keeps track of the current window's sum
+        
+        for (int i = 0; i < nums.size(); i++) {
+            current_sum += nums[i];
+            
+            // Update max_sum if we found a new highest sum
+            if (current_sum > max_sum) {
+                max_sum = current_sum;
+            }
+            
+            // If current_sum becomes negative, reset it.
+            // It's not worth keeping this prefix for the next elements.
+            if (current_sum < 0) {
+                current_sum = 0;
+            }
+        }
+        
+        return max_sum;
+    }
+};
+THE CORE IDEA
+-------------
+Instead of looking at every possible subarray (which takes too long), we walk through the array left to right, maintaining a "running sum" (curr). 
+
+Rule 1: Add the current number to the running sum.
+Rule 2: If the running sum is greater than our highest recorded sum (max), update 'max'.
+Rule 3: If the running sum drops below 0, it means our current sequence is doing more harm than good. We throw it away by resetting the running sum to 0 and starting fresh with the next number.
+
+EXAMPLE VISUALIZATION
+---------------------
+Let's trace the algorithm using LeetCode's standard example array:
+Array: [-2,  1, -3,  4, -1,  2,  1, -5,  4]
+
+Initial State:
+curr = 0
+max  = -Infinity
+
+Step-by-step execution:
+
+| Step | Num | curr (before check) | max updated? | curr drops < 0? | curr (end of step) |
+|------|-----|---------------------|--------------|-----------------|--------------------|
+|  1   | -2  | 0 + (-2) = -2       | max = -2     | YES. Reset to 0 | 0                  |
+|  2   |  1  | 0 + 1 = 1           | max = 1      | No              | 1                  |
+|  3   | -3  | 1 + (-3) = -2       | None         | YES. Reset to 0 | 0                  |
+|  4   |  4  | 0 + 4 = 4           | max = 4      | No              | 4                  |
+|  5   | -1  | 4 + (-1) = 3        | None         | No              | 3                  |
+|  6   |  2  | 3 + 2 = 5           | max = 5      | No              | 5                  |
+|  7   |  1  | 5 + 1 = 6           | max = 6      | No              | 6                  |
+|  8   | -5  | 6 + (-5) = 1        | None         | No              | 1                  |
+|  9   |  4  | 1 + 4 = 5           | None         | No              | 5                  |
+
+Result: The variable 'max' holds the value 6, which is the sum of the subarray [4, -1, 2, 1].
+
+THE JAVA CODE
+-------------
+class Solution {
+    public int maxSubArray(int[] nums) {
+        int n = nums.length;
+        int curr = 0;
+        int max = Integer.MIN_VALUE; 
+        
+        for (int i = 0; i < n; i++) {
+            curr += nums[i];      // Rule 1
+            
+            if (curr > max) {     // Rule 2
+                max = curr;
+            }
+            
+            if (curr < 0) {       // Rule 3
+                curr = 0;
+            }
+        }
+        
+        return max;
+    }
+}
