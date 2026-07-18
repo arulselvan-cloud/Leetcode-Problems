@@ -1,0 +1,61 @@
+C++ Solution:
+class Solution {
+    void traverse(vector<int>&res,TreeNode*node)
+    {
+        if(node==nullptr)return;
+        traverse(res,node->left);
+        res.push_back(node->val);
+        traverse(res,node->right);
+    }
+public:
+    vector<int> inorderTraversal(TreeNode* root) {
+        vector<int>result;
+        traverse(result,root);
+        return result;
+    }
+};
+
+JAVA SOLUTION:
+class Solution {
+    public void traverse(TreeNode root,List<Integer>res)
+    {
+        if(root==null)return;
+        traverse(root.left,res);
+        res.add(root.val);
+        traverse(root.right,res);
+    }
+    public List<Integer> inorderTraversal(TreeNode root) {
+        List<Integer>res=new ArrayList<>();
+        traverse(root,res);
+        return res;
+    }
+}
+
+
+EXPLAINATION:
+o understand Inorder Traversal, all you need to remember is its golden rule. For every single node you visit, you must follow this exact order:Left: Visit the entire left side.Node: Visit the current node itself (record its value).Right: Visit the entire right side.🌳 Visualization 1: The LeetCode ExampleLet's look at Example 1 from your screen:Plaintext   
+   (1)
+     \
+     (2)
+     /
+   (3)
+Here is exactly how the algorithm walks through this tree:Start at (1):Rule 1 (Go Left): (1) has no left child.Rule 2 (Visit Node): We record 1. Result: [1]Rule 3 (Go Right): We move to the right child, which is (2).Now at (2):Rule 1 (Go Left): (2) has a left child, which is (3). So, we pause (2) and go down to (3).Now at (3):Rule 1 (Go Left): (3) has no left child.Rule 2 (Visit Node): We record 3. Result: [1, 3]Rule 3 (Go Right): (3) has no right child. We are done with (3).Backtrack to (2):We finished the "Left" step for (2).Rule 2 (Visit Node): We record 2. Result: [1, 3, 2]Rule 3 (Go Right): (2) has no right child. We are done with (2).Final Output: [1, 3, 2]🌳 Visualization 2: Why is it called "Inorder"?It helps to see a slightly larger tree to understand why this is useful. If you run an Inorder Traversal on a Binary Search Tree (BST), it will always read the numbers in perfect sorted order.Plaintext       
+       (4)
+      /   \
+    (2)   (6)
+    / \   / \
+  (1)(3)(5)(7)
+If you apply the Left $\rightarrow$ Node $\rightarrow$ Right rule to this tree:Go all the way left to 1. Record it.Go up to 2. Record it.Go right to 3. Record it.Go up to 4. Record it.Go down right to 6, but wait, go left to 5. Record it.Go up to 6. Record it.Go right to 7. Record it.Output: [1, 2, 3, 4, 5, 6, 7]💻 How this maps to your ImplementationThe beauty of recursion is that the code looks exactly like the golden rule. You just tell the computer what to do for one node, and it handles the rest.C++void traverse(TreeNode* node, vector<int>& res) {
+    // Stop if we hit a dead end (null node)
+    if (node == nullptr) return; 
+
+    // Step 1: LEFT
+    traverse(node->left, res);  
+    
+    // Step 2: NODE
+    res.push_back(node->val);   
+    
+    // Step 3: RIGHT
+    traverse(node->right, res); 
+}
+To implement this easily:Always write your base case first (if (node == nullptr) return;). This stops the function from running forever.Write the three steps in order: Left recursive call, process the current node's value, Right recursive call.In your main inorderTraversal function, just create the vector, pass it into your helper function, and return it when it's done!
