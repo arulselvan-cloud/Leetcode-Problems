@@ -1,0 +1,33 @@
+C++ SOLUTION:
+class Solution {
+    void traverse(TreeNode*root,vector<int>&res)
+{
+    if(root==nullptr)return;
+    traverse(root->left,res);
+    traverse(root->right,res);
+    res.push_back(root->val);
+}
+public:
+   vector<int> postorderTraversal(TreeNode* root) {
+        vector<int>res;
+        traverse(root,res);
+        return res;
+    }
+};
+
+JAVA SOLUTION:
+
+class Solution {
+    public void traverse(TreeNode root,List<Integer>res)
+    {
+        if(root==null)return;
+        traverse(root.left,res);
+        traverse(root.right,res);
+        res.add(root.val);
+    }
+    public List<Integer> postorderTraversal(TreeNode root) {
+        List<Integer>res=new ArrayList<>();
+        traverse(root,res);
+        return res;
+    }
+}
