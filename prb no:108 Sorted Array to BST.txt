@@ -1,0 +1,579 @@
+C++ SOLUTION:
+
+class Solution {
+public:
+    TreeNode* sortedArrayToBST(vector<int>& nums) {
+        return buildtree(nums,0,nums.size()-1);
+    }
+private:
+    TreeNode*buildtree(vector<int>&nums,int left,int right)
+    {
+        if(left>right)return nullptr;
+        int mid=left+(right-left)/2;
+        TreeNode*root=new TreeNode(nums[mid]);
+        root->left=buildtree(nums,left,mid- 1);
+        root->right=buildtree(nums,mid+ 1,right);
+        return root;
+    }
+};
+
+JAVA SOLUTION:
+
+class Solution {
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return buildtree(nums,0,nums.length-1);
+    }
+    TreeNode buildtree(int []nums,int left,int right)
+    {
+        if(left>right)return null;
+        int mid=left+(right-left)/2;
+        TreeNode root=new TreeNode(nums[mid]);
+        root.left=buildtree(nums,left,mid- 1);
+        root.right=buildtree(nums,mid+ 1,right);
+        return root;
+    }
+}
+
+EXPLAINATION:
+===========================================================
+LeetCode 108 - Convert Sorted Array to Binary Search Tree
+===========================================================
+
+PROBLEM STATEMENT
+-----------------
+Given a sorted array (ascending order), convert it into a Height Balanced Binary Search Tree (BST).
+
+Example:
+Input:
+[-10, -3, 0, 5, 9]
+
+One Possible Output:
+
+          0
+        /   \
+     -10     5
+        \      \
+        -3      9
+
+Another valid balanced BST is also accepted because multiple height-balanced BSTs can be formed.
+
+-----------------------------------------------------------
+WHAT IS A BINARY SEARCH TREE (BST)?
+-----------------------------------------------------------
+
+A Binary Search Tree follows this rule:
+
+Left Subtree < Root < Right Subtree
+
+Example:
+
+          8
+        /   \
+       4     12
+      / \   /  \
+     2   6 10  15
+
+Here,
+2 < 4 < 6 < 8 < 10 < 12 < 15
+
+-----------------------------------------------------------
+WHAT IS A HEIGHT BALANCED BST?
+-----------------------------------------------------------
+
+A Height Balanced BST is a tree in which the difference between the heights of the left and right subtree of every node is at most 1.
+
+Balanced Tree:
+
+          4
+        /   \
+       2     6
+      / \   / \
+     1   3 5   7
+
+Not Balanced:
+
+1
+ \
+  2
+   \
+    3
+     \
+      4
+
+-----------------------------------------------------------
+MAIN IDEA
+-----------------------------------------------------------
+
+Since the array is already sorted,
+
+Left Half contains smaller elements.
+Middle element becomes the Root.
+Right Half contains larger elements.
+
+Choosing the middle element automatically satisfies the BST property and keeps the tree balanced.
+
+Algorithm:
+
+Left Half --> Left Subtree
+Middle    --> Root
+Right Half --> Right Subtree
+
+This process is repeated recursively.
+
+-----------------------------------------------------------
+VISUALIZATION
+-----------------------------------------------------------
+
+Input:
+
+[-10, -3, 0, 5, 9]
+
+Indexes:
+
+ 0    1   2   3   4
+-10  -3   0   5   9
+
+Middle index = 2
+
+Root = 0
+
+              0
+
+Now split into two parts.
+
+Left Part:
+
+[-10, -3]
+
+Right Part:
+
+[5, 9]
+
+-----------------------------------------------------------
+BUILDING LEFT SUBTREE
+-----------------------------------------------------------
+
+Array:
+
+[-10, -3]
+
+Indexes:
+
+0   1
+
+Middle = 0
+
+Root = -10
+
+              0
+             /
+          -10
+
+Remaining Right:
+
+[-3]
+
+              0
+             /
+          -10
+             \
+             -3
+
+-----------------------------------------------------------
+BUILDING RIGHT SUBTREE
+-----------------------------------------------------------
+
+Array:
+
+[5, 9]
+
+Middle = 3
+
+Root = 5
+
+              0
+            /   \
+         -10     5
+            \
+            -3
+
+Remaining:
+
+[9]
+
+              0
+            /   \
+         -10     5
+            \      \
+            -3      9
+
+This is the final Height Balanced BST.
+
+-----------------------------------------------------------
+RECURSION TREE
+-----------------------------------------------------------
+
+buildTree(0,4)
+
+                0
+             /      \
+     build(0,1)   build(3,4)
+
+          |            |
+
+        -10            5
+
+          \             \
+
+      build(1,1)    build(4,4)
+
+           |             |
+
+          -3             9
+
+-----------------------------------------------------------
+JAVA CODE
+-----------------------------------------------------------
+
+class Solution {
+
+    public TreeNode sortedArrayToBST(int[] nums) {
+        return buildTree(nums, 0, nums.length - 1);
+    }
+
+    TreeNode buildTree(int[] nums, int left, int right) {
+
+        if(left > right)
+            return null;
+
+        int mid = left + (right - left) / 2;
+
+        TreeNode root = new TreeNode(nums[mid]);
+
+        root.left = buildTree(nums, left, mid - 1);
+
+        root.right = buildTree(nums, mid + 1, right);
+
+        return root;
+    }
+}
+
+-----------------------------------------------------------
+LINE BY LINE EXPLANATION
+-----------------------------------------------------------
+
+1.
+
+public TreeNode sortedArrayToBST(int[] nums)
+
+This is the main function.
+
+It starts building the BST from the complete array.
+
+Example:
+
+[-10,-3,0,5,9]
+
+Calls
+
+buildTree(nums,0,4)
+
+-----------------------------------------------------------
+
+2.
+
+if(left > right)
+    return null;
+
+Base Case
+
+If there are no elements left in the current subarray,
+there is no node to create.
+
+Example:
+
+left = 5
+
+right = 4
+
+Since
+
+5 > 4
+
+Return NULL.
+
+-----------------------------------------------------------
+
+3.
+
+int mid = left + (right-left)/2;
+
+Finds the middle index.
+
+Example:
+
+left = 0
+
+right = 4
+
+mid = 0 + (4-0)/2
+
+mid = 2
+
+Middle element = nums[2]
+
+which is
+
+0
+
+-----------------------------------------------------------
+
+Why not use
+
+(left + right)/2 ?
+
+Because for very large numbers,
+
+left + right
+
+can overflow.
+
+The safer formula is
+
+left + (right-left)/2
+
+-----------------------------------------------------------
+
+4.
+
+TreeNode root = new TreeNode(nums[mid]);
+
+Creates a node using the middle element.
+
+Example
+
+nums[mid]
+
+0
+
+Creates
+
+      0
+
+-----------------------------------------------------------
+
+5.
+
+root.left = buildTree(nums,left,mid-1);
+
+Recursively builds the left subtree.
+
+Example
+
+Left Part
+
+[-10,-3]
+
+It returns
+
+      -10
+         \
+         -3
+
+and attaches it to root.left
+
+-----------------------------------------------------------
+
+6.
+
+root.right = buildTree(nums,mid+1,right);
+
+Recursively builds the right subtree.
+
+Example
+
+Right Part
+
+[5,9]
+
+Returns
+
+      5
+       \
+       9
+
+and attaches it to root.right
+
+-----------------------------------------------------------
+
+7.
+
+return root;
+
+Returns the completed subtree back to the previous recursive call.
+
+Eventually,
+
+the very first call returns the entire BST.
+
+-----------------------------------------------------------
+COMPLETE DRY RUN
+-----------------------------------------------------------
+
+Input
+
+[-10,-3,0,5,9]
+
+Call 1
+
+build(0,4)
+
+Middle = 2
+
+Root = 0
+
+Tree
+
+      0
+
+----------------------------------
+
+Call 2
+
+build(0,1)
+
+Middle = 0
+
+Root = -10
+
+Tree
+
+      0
+     /
+  -10
+
+----------------------------------
+
+Call 3
+
+build(1,1)
+
+Middle = 1
+
+Root = -3
+
+Tree
+
+      0
+     /
+  -10
+      \
+      -3
+
+----------------------------------
+
+Call 4
+
+build(3,4)
+
+Middle = 3
+
+Root = 5
+
+Tree
+
+      0
+    /   \
+ -10      5
+    \
+    -3
+
+----------------------------------
+
+Call 5
+
+build(4,4)
+
+Middle = 4
+
+Root = 9
+
+Final Tree
+
+        0
+      /   \
+   -10      5
+      \      \
+      -3      9
+
+-----------------------------------------------------------
+WHY DOES THIS WORK?
+-----------------------------------------------------------
+
+Every recursive call performs these three steps:
+
+1. Choose the middle element.
+2. Build the left subtree.
+3. Build the right subtree.
+
+Since every recursive call divides the array into two halves, the tree remains balanced.
+
+-----------------------------------------------------------
+TIME COMPLEXITY
+-----------------------------------------------------------
+
+Each array element is converted into exactly one tree node.
+
+No element is processed more than once.
+
+Therefore,
+
+Time Complexity = O(n)
+
+where n is the number of elements.
+
+-----------------------------------------------------------
+SPACE COMPLEXITY
+-----------------------------------------------------------
+
+The extra space is used only by the recursion stack.
+
+Since the tree is balanced,
+
+Height = log₂(n)
+
+Maximum recursion depth = log₂(n)
+
+Therefore,
+
+Space Complexity = O(log n)
+
+-----------------------------------------------------------
+ALGORITHM
+-----------------------------------------------------------
+
+1. Start with the complete sorted array.
+2. Find the middle element.
+3. Create a node using the middle element.
+4. Recursively build the left subtree using the left half.
+5. Recursively build the right subtree using the right half.
+6. Return the root node.
+7. Repeat until the subarray becomes empty.
+
+-----------------------------------------------------------
+INTERVIEW / EXAM EXPLANATION
+-----------------------------------------------------------
+
+The given array is already sorted. To construct a height-balanced Binary Search Tree, we always select the middle element as the root. The left half of the array contains smaller elements and forms the left subtree, while the right half contains larger elements and forms the right subtree. This process is applied recursively until all elements are used. Since every element is processed exactly once, the time complexity is O(n). As the array is divided into two halves at every recursive call, the recursion depth is O(log n), giving a space complexity of O(log n).
+
+-----------------------------------------------------------
+COMPLEXITY SUMMARY
+-----------------------------------------------------------
+
+Time Complexity  : O(n)
+
+Space Complexity : O(log n)
+
+Approach Used    : Divide and Conquer + Recursion
+
+Data Structure   : Binary Search Tree (BST)
