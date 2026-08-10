@@ -1,0 +1,787 @@
+You are given an m x n integer matrix matrix with the following two properties:
+
+Each row is sorted in non-decreasing order.
+The first integer of each row is greater than the last integer of the previous row.
+Given an integer target, return true if target is in matrix or false otherwise.
+
+You must write a solution in O(log(m * n)) time complexity.
+
+ 
+
+Example 1:
+
+
+Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 3
+Output: true
+Example 2:
+
+
+Input: matrix = [[1,3,5,7],[10,11,16,20],[23,30,34,60]], target = 13
+Output: false
+ 
+
+Constraints:
+
+m == matrix.length
+n == matrix[i].length
+1 <= m, n <= 100
+-104 <= matrix[i][j], target <= 104
+
+
+JAVA SOLUTION:
+
+class Solution {
+    public boolean searchMatrix(int[][] matrix, int target) {
+        boolean flag=false;
+        int low=0;
+        int high=(matrix[0].length*matrix.length)-1;
+        while(low<=high)
+        {
+            int mid=low+(high-low)/2;
+            int mid_val=matrix[mid/matrix[0].length][mid%matrix[0].length];
+            if(mid_val==target)
+            {
+                return true;
+            }
+            else if(mid_val<target)
+            {
+                low=mid+ 1;
+            }
+            else {
+                high=mid-1;
+            }
+        }
+        return flag;
+    }
+}
+
+
+
+C++ SOLUTION:
+
+class Solution {
+public:
+    bool searchMatrix(vector<vector<int>>& matrix, int target) {
+        bool flag=false;
+        int rows=matrix.size();
+        int cols=matrix[0].size();
+        int high=(rows*cols)- 1;
+        int low=0;
+        while(low<=high)
+        {
+          int mid=low+(high-low)/2;
+          int mid_val=matrix[mid/cols][mid%cols];
+        if(mid_val==target)
+        {
+            flag=true;
+            return flag;
+        }
+        else if(mid_val<target)
+        {
+            low=mid+1;
+        }
+        else if(mid_val>target)
+        {
+            high=mid-1;
+        }
+        }
+        return flag;
+    }
+};
+
+
+EXPLAINATION:
+# SEARCH IN A 2D MATRIX USING BINARY SEARCH
+
+## Problem:
+
+Given a matrix where:
+
+1. Each row is sorted in ascending order.
+2. The first element of every row is greater than the last element of the previous row.
+
+We need to determine whether a target value exists in the matrix.
+
+Example:
+
+matrix =
+[
+[1,  3,  5,  7],
+[10, 11, 16, 20],
+[23, 30, 34, 60]
+]
+
+target = 16
+
+Answer = true
+
+## MAIN IDEA
+
+Although the matrix is 2D, we can imagine it as one sorted 1D array.
+
+2D matrix:
+
+```
+    Col 0   Col 1   Col 2   Col 3
+    --------------------------------
+```
+
+Row 0 |   1       3       5       7
+Row 1 |  10      11      16      20
+Row 2 |  23      30      34      60
+
+Imagine it as:
+
+[1, 3, 5, 7, 10, 11, 16, 20, 23, 30, 34, 60]
+
+Now we can use normal Binary Search.
+
+## WHY BINARY SEARCH?
+
+The elements are globally sorted.
+
+For example:
+
+1 < 3 < 5 < 7 < 10 < 11 < 16 < 20 < 23 < 30 < 34 < 60
+
+So instead of checking every element one by one, Binary Search repeatedly
+cuts the search area in half.
+
+Normal Linear Search:
+
+```
+Check 1
+Check 3
+Check 5
+Check 7
+...
+```
+
+Binary Search:
+
+```
+Check middle
+     |
+----------------
+|              |
+```
+
+smaller        larger
+|              |
+discard         discard
+half            half
+
+## STEP 1: FIND MATRIX SIZE
+
+int rows = matrix.size();
+int cols = matrix[0].size();
+
+For:
+
+[
+[1,  3,  5,  7],
+[10, 11, 16, 20],
+[23, 30, 34, 60]
+]
+
+rows = 3
+cols = 4
+
+## STEP 2: TREAT MATRIX AS 1D ARRAY
+
+Total number of elements:
+
+```
+rows * cols
+
+3 * 4 = 12
+```
+
+So the virtual 1D indexes are:
+
+Index:   0   1   2   3   4   5   6   7   8   9   10  11
+Value:   1   3   5   7  10  11  16  20  23  30   34  60
+
+Therefore:
+
+int low = 0;
+int high = (rows * cols) - 1;
+
+Here:
+
+low = 0
+high = 11
+
+## STEP 3: FIND MIDDLE
+
+Binary Search calculates:
+
+int mid = low + (high - low) / 2;
+
+Initially:
+
+low = 0
+high = 11
+
+mid = 0 + (11 - 0) / 2
+mid = 5
+
+So we need the element at virtual index 5.
+
+Virtual array:
+
+```
+0   1   2   3   4   5   6   7   8   9   10  11
+-----------------------------------------------
+1   3   5   7  10  11  16  20  23  30  34  60
+                        ^
+                        |
+                       mid=5
+```
+
+But our actual data is still stored as a 2D matrix.
+
+So we need to convert index 5 into:
+
+```
+row = ?
+column = ?
+```
+
+## CONVERTING 1D INDEX TO 2D
+
+This is the most important part:
+
+```
+matrix[mid / cols][mid % cols]
+```
+
+Two operations are used:
+
+```
+mid / cols  -> row number
+mid % cols  -> column number
+```
+
+For mid = 5:
+
+```
+5 / 4 = 1
+5 % 4 = 1
+```
+
+Therefore:
+
+```
+row = 1
+column = 1
+```
+
+So:
+
+```
+matrix[1][1]
+```
+
+is:
+
+```
+11
+```
+
+Visual:
+
+```
+    Col 0   Col 1   Col 2   Col 3
+    --------------------------------
+```
+
+Row 0 |   1       3       5       7
+Row 1 |  10      11      16      20
+^
+|
+matrix[1][1]
+
+Therefore:
+
+```
+mid_val = 11
+```
+
+## WHY mid / cols GIVES ROW
+
+Suppose there are 4 columns.
+
+Every group of 4 elements belongs to one row.
+
+Indexes:
+
+Row 0:
+0   1   2   3
+
+Row 1:
+4   5   6   7
+
+Row 2:
+8   9   10  11
+
+Integer division by 4:
+
+```
+0 / 4 = 0
+1 / 4 = 0
+2 / 4 = 0
+3 / 4 = 0
+```
+
+These belong to Row 0.
+
+Then:
+
+```
+4 / 4 = 1
+5 / 4 = 1
+6 / 4 = 1
+7 / 4 = 1
+```
+
+These belong to Row 1.
+
+Then:
+
+```
+8 / 4 = 2
+9 / 4 = 2
+10 / 4 = 2
+11 / 4 = 2
+```
+
+These belong to Row 2.
+
+So:
+
+```
+mid / cols = row
+```
+
+## WHY mid % cols GIVES COLUMN
+
+The remainder tells us the position inside the row.
+
+For 4 columns:
+
+```
+0 % 4 = 0
+1 % 4 = 1
+2 % 4 = 2
+3 % 4 = 3
+```
+
+Then:
+
+```
+4 % 4 = 0
+5 % 4 = 1
+6 % 4 = 2
+7 % 4 = 3
+```
+
+So:
+
+```
+mid % cols = column
+```
+
+## FULL EXAMPLE
+
+Matrix:
+
+[
+[1,  3,  5,  7],
+[10, 11, 16, 20],
+[23, 30, 34, 60]
+]
+
+Target = 16
+
+Initial:
+
+```
+low = 0
+high = 11
+```
+
+## ITERATION 1
+
+mid = 0 + (11 - 0) / 2
+mid = 5
+
+Convert index 5:
+
+```
+row = 5 / 4 = 1
+col = 5 % 4 = 1
+```
+
+matrix[1][1] = 11
+
+Compare:
+
+```
+11 < 16
+```
+
+Target is larger, so discard left half.
+
+```
+low = mid + 1
+low = 6
+```
+
+Visual:
+
+```
+0   1   2   3   4   5 | 6   7   8   9   10  11
+-----------------------|-------------------------
+discarded              | search area
+```
+
+## ITERATION 2
+
+Now:
+
+```
+low = 6
+high = 11
+```
+
+mid = 6 + (11 - 6) / 2
+mid = 8
+
+Convert index 8:
+
+```
+row = 8 / 4 = 2
+col = 8 % 4 = 0
+```
+
+matrix[2][0] = 23
+
+Compare:
+
+```
+23 > 16
+```
+
+Target is smaller, so discard right half.
+
+```
+high = mid - 1
+high = 7
+```
+
+Search area:
+
+```
+6   7
+--------
+16  20
+```
+
+## ITERATION 3
+
+low = 6
+high = 7
+
+mid = 6 + (7 - 6) / 2
+mid = 6
+
+Convert index 6:
+
+```
+row = 6 / 4 = 1
+col = 6 % 4 = 2
+```
+
+matrix[1][2] = 16
+
+Compare:
+
+```
+16 == 16
+```
+
+Target found!
+
+Return:
+
+```
+true
+```
+
+## CODE EXPLANATION
+
+bool flag = false;
+
+Stores whether target was found.
+
+Initially:
+
+```
+flag = false
+```
+
+int rows = matrix.size();
+
+Gets number of rows.
+
+Example:
+
+```
+3 rows -> rows = 3
+```
+
+int cols = matrix[0].size();
+
+Gets number of columns.
+
+Example:
+
+```
+4 columns -> cols = 4
+```
+
+int high = (rows * cols) - 1;
+
+Gets the last virtual 1D index.
+
+For 3 x 4 matrix:
+
+```
+3 * 4 = 12 elements
+```
+
+Last index:
+
+```
+12 - 1 = 11
+```
+
+int low = 0;
+
+First virtual index is 0.
+
+while(low <= high)
+
+Continue Binary Search while there is still a valid search range.
+
+int mid = low + (high - low) / 2;
+
+Find the middle index.
+
+This form is preferred over:
+
+```
+(low + high) / 2
+```
+
+because it avoids potential integer overflow for very large values.
+
+int mid_val = matrix[mid / cols][mid % cols];
+
+Convert virtual 1D index into the actual 2D position.
+
+```
+mid / cols -> row
+mid % cols -> column
+```
+
+if(mid_val == target)
+
+If middle value equals target:
+
+```
+return true;
+```
+
+else if(mid_val < target)
+
+Middle value is smaller than target.
+
+Therefore target must be on the right.
+
+```
+low = mid + 1;
+```
+
+else if(mid_val > target)
+
+Middle value is larger than target.
+
+Therefore target must be on the left.
+
+```
+high = mid - 1;
+```
+
+If the loop finishes:
+
+```
+return false;
+```
+
+This means target does not exist in the matrix.
+
+## COMPLETE SEARCH VISUAL
+
+Example:
+
+Matrix:
+
+```
+[ 1   3   5   7  ]
+[10  11  16  20  ]
+[23  30  34  60  ]
+```
+
+Target = 16
+
+Virtual array:
+
+```
+1   3   5   7   10   11   16   20   23   30   34   60
+|                       |          |
+```
+
+left                    mid       right
+
+Step 1:
+
+```
+mid = 11
+11 < 16
+```
+
+Discard:
+
+```
+[1  3  5  7  10  11]
+```
+
+Search:
+
+```
+[16  20  23  30  34  60]
+```
+
+Step 2:
+
+```
+mid = 23
+23 > 16
+```
+
+Discard:
+
+```
+[23  30  34  60]
+```
+
+Search:
+
+```
+[16  20]
+```
+
+Step 3:
+
+```
+mid = 16
+
+16 == 16
+
+FOUND!
+```
+
+## TIME COMPLEXITY
+
+There are:
+
+```
+rows * cols
+```
+
+elements.
+
+Binary Search takes:
+
+```
+O(log(rows * cols))
+```
+
+time.
+
+Because each iteration removes approximately half of the remaining elements.
+
+## SPACE COMPLEXITY
+
+No extra data structure is used.
+
+Therefore:
+
+```
+O(1)
+```
+
+space.
+
+## KEY CONCEPT TO REMEMBER
+
+For a matrix with 'cols' columns:
+
+```
+1D index -> 2D position
+
+row    = index / cols
+column = index % cols
+```
+
+So:
+
+```
+matrix[index / cols][index % cols]
+```
+
+## SHORT SUMMARY
+
+1. Treat the 2D matrix as a sorted 1D array.
+
+2. Set low = 0.
+
+3. Set high = rows * cols - 1.
+
+4. Find mid using Binary Search.
+
+5. Convert mid into matrix position:
+
+   ```
+   row = mid / cols
+   col = mid % cols
+   ```
+
+6. Compare matrix[row][col] with target.
+
+7. If smaller, move low right.
+
+8. If larger, move high left.
+
+9. If equal, return true.
+
+10. If search ends, return false.
+
+Complexity:
+
+```
+Time  : O(log(rows * cols))
+Space : O(1)
+```
