@@ -1,0 +1,1067 @@
+Write an algorithm to determine if a number n is happy.
+
+A happy number is a number defined by the following process:
+
+Starting with any positive integer, replace the number by the sum of the squares of its digits.
+Repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1.
+Those numbers for which this process ends in 1 are happy.
+Return true if n is a happy number, and false if not.
+
+ 
+
+Example 1:
+
+Input: n = 19
+Output: true
+Explanation:
+12 + 92 = 82
+82 + 22 = 68
+62 + 82 = 100
+12 + 02 + 02 = 1
+Example 2:
+
+Input: n = 2
+Output: false
+ 
+
+Constraints:
+
+1 <= n <= 231 - 1
+
+C++ SOLUTION USING UNORDERED SETS:
+class Solution {
+public:
+    bool isHappy(int n) {
+        int temp;
+        unordered_set<int>seen;
+        while(true)
+        {
+           temp=n;
+           int sum=0;
+           while(temp>0)
+           {
+              sum+=pow(temp%10,2);
+              temp=temp/10;
+           }
+           if(sum==1)
+           {
+            return true;
+           }
+           if(seen.count(sum))
+           {
+            return false;
+           }
+           seen.insert(sum);
+           n=sum;
+        }
+        return false;
+    }
+};
+
+EXPLAINATION:
+HAPPY NUMBER - CODE EXPLANATION
+
+A Happy Number is a number that eventually becomes 1 when we repeatedly
+replace the number with the sum of the squares of its digits.
+
+Example:
+
+19
+ |
+ | 1^2 + 9^2
+ v
+82
+ |
+ | 8^2 + 2^2
+ v
+68
+ |
+ | 6^2 + 8^2
+ v
+100
+ |
+ | 1^2 + 0^2 + 0^2
+ v
+1
+ |
+ v
+HAPPY NUMBER
+
+
+--------------------------------------------------
+1. unordered_set<int> seen
+--------------------------------------------------
+
+unordered_set<int> seen;
+
+The set stores the numbers that we have already encountered.
+
+Why?
+
+Some numbers never reach 1. Instead, they enter an infinite cycle.
+
+Example:
+
+2 -> 4 -> 16 -> 37 -> 58 -> 89 -> 145 -> 42 -> 20 -> 4
+                                                        |
+                                                        +--> Cycle
+
+When 4 appears again, we know that the process will repeat forever.
+
+Therefore, we return false.
+
+
+--------------------------------------------------
+2. temp = n
+--------------------------------------------------
+
+temp = n;
+
+We make a copy of n in temp.
+
+Example:
+
+n = 19
+
+temp = 19
+
+We use temp to extract the digits without directly changing n.
+
+
+--------------------------------------------------
+3. Extracting the last digit
+--------------------------------------------------
+
+temp % 10
+
+The % operator gives the remainder.
+
+Therefore, % 10 gives the last digit of a number.
+
+Examples:
+
+19 % 10 = 9
+82 % 10 = 2
+145 % 10 = 5
+
+Visual:
+
+19
+ |
+ | % 10
+ v
+9
+
+
+145
+ |
+ | % 10
+ v
+5
+
+
+--------------------------------------------------
+4. Removing the last digit
+--------------------------------------------------
+
+temp = temp / 10;
+
+Integer division by 10 removes the last digit.
+
+Examples:
+
+19 / 10 = 1
+145 / 10 = 14
+14 / 10 = 1
+1 / 10 = 0
+
+Visual:
+
+145 -> 14 -> 1 -> 0
+
+
+--------------------------------------------------
+5. Calculating the sum of squares
+--------------------------------------------------
+
+sum += pow(temp % 10, 2);
+
+This does three things:
+
+1. Gets the last digit.
+2. Squares the digit.
+3. Adds it to sum.
+
+Example:
+
+For 19:
+
+First digit:
+
+19 % 10 = 9
+9^2 = 81
+
+Then:
+
+19 / 10 = 1
+
+Second digit:
+
+1 % 10 = 1
+1^2 = 1
+
+Therefore:
+
+sum = 81 + 1
+    = 82
+
+
+--------------------------------------------------
+6. Complete calculation for 19
+--------------------------------------------------
+
+Start:
+
+n = 19
+
+Step 1:
+
+19
+ |
+ | 1^2 + 9^2
+ v
+82
+
+Step 2:
+
+82
+ |
+ | 8^2 + 2^2
+ v
+68
+
+Step 3:
+
+68
+ |
+ | 6^2 + 8^2
+ v
+100
+
+Step 4:
+
+100
+ |
+ | 1^2 + 0^2 + 0^2
+ v
+1
+
+Since sum == 1:
+
+return true;
+
+
+--------------------------------------------------
+7. Checking whether sum is 1
+--------------------------------------------------
+
+if(sum == 1)
+{
+    return true;
+}
+
+If the calculated sum is 1, the number is Happy.
+
+Example:
+
+100 -> 1
+
+Therefore:
+
+return true;
+
+
+--------------------------------------------------
+8. Checking for a cycle
+--------------------------------------------------
+
+if(seen.count(sum))
+{
+    return false;
+}
+
+seen.count(sum) checks whether sum is already present
+in the unordered_set.
+
+Example:
+
+Suppose the sequence is:
+
+2 -> 4 -> 16 -> 37 -> 58 -> 89 -> 145 -> 42 -> 20 -> 4
+
+The set contains:
+
+{4, 16, 37, 58, 89, 145, 42, 20}
+
+When we get 4 again:
+
+seen.count(4)
+
+returns true.
+
+Therefore:
+
+return false;
+
+
+--------------------------------------------------
+9. Storing the current sum
+--------------------------------------------------
+
+seen.insert(sum);
+
+This stores the current sum so that we can detect it
+if it appears again.
+
+Example:
+
+After calculating 82:
+
+seen = {82}
+
+After calculating 68:
+
+seen = {82, 68}
+
+After calculating 100:
+
+seen = {82, 68, 100}
+
+
+--------------------------------------------------
+10. Moving to the next number
+--------------------------------------------------
+
+n = sum;
+
+The newly calculated sum becomes the next number.
+
+Example:
+
+19 -> 82
+
+Then:
+
+n = 82
+
+Next:
+
+82 -> 68
+
+Then:
+
+n = 68
+
+Next:
+
+68 -> 100
+
+Then:
+
+n = 100
+
+
+--------------------------------------------------
+11. Complete Flow
+--------------------------------------------------
+
+                    n
+                    |
+                    v
+             Extract digits
+                    |
+                    v
+          Square every digit
+                    |
+                    v
+             Add the squares
+                    |
+                    v
+                sum
+                    |
+              +-----+-----+
+              |           |
+          sum == 1?       No
+              |           |
+             YES          v
+              |       Is sum already
+              v          in seen?
+           return          |
+           true       +----+----+
+                      |         |
+                     YES        NO
+                      |         |
+                      v         v
+                 return false  Store sum
+                                |
+                                v
+                              n = sum
+                                |
+                                v
+                              Repeat
+
+
+--------------------------------------------------
+12. Example of Happy Number
+--------------------------------------------------
+
+19 -> 82 -> 68 -> 100 -> 1
+                              |
+                              v
+                         return true
+
+
+--------------------------------------------------
+13. Example of Unhappy Number
+--------------------------------------------------
+
+2 -> 4 -> 16 -> 37 -> 58 -> 89 -> 145 -> 42 -> 20
+    ^                                             |
+    |_____________________________________________|
+
+4 appears again.
+
+Therefore, a cycle exists.
+
+return false;
+
+
+--------------------------------------------------
+14. Overall Logic
+--------------------------------------------------
+
+The algorithm keeps calculating:
+
+sum = square of digit 1
+    + square of digit 2
+    + square of digit 3
+    + ...
+
+If the result becomes 1:
+
+        HAPPY NUMBER
+
+If a result appears again:
+
+        CYCLE DETECTED
+        NOT A HAPPY NUMBER
+
+
+--------------------------------------------------
+15. Simple Summary
+--------------------------------------------------
+
+temp % 10
+    -> gets the last digit
+
+temp / 10
+    -> removes the last digit
+
+pow(digit, 2)
+    -> calculates the square of the digit
+
+sum
+    -> stores the sum of all squared digits
+
+seen
+    -> remembers previous results
+
+sum == 1
+    -> Happy Number
+
+sum already in seen
+    -> Cycle detected -> Not Happy
+
+JAVA SOLUTION USING HASH MAPPING:
+class Solution {
+    public boolean isHappy(int n) {
+        boolean []seen =new boolean[1000];
+        while(true)
+        {
+            int sum=0;
+            int temp=n;
+            while(temp>0)
+            {
+                sum+=(int)Math.pow(temp%10,2);temp=temp/10;
+            }
+            if(sum==1)return true;
+            if(sum<1000&&seen[sum])return false;
+            if(sum<1000)seen[sum]=true;
+            n=sum;
+        }
+    }
+}
+
+EXPLAINATION:
+
+HAPPY NUMBER - JAVA CODE EXPLANATION
+
+The given code checks whether a number is a Happy Number.
+
+A Happy Number is a number that eventually becomes 1 when we repeatedly
+replace it with the sum of the squares of its digits.
+
+Example:
+
+19 -> 82 -> 68 -> 100 -> 1
+
+Therefore, 19 is a Happy Number.
+
+
+==================================================
+1. BOOLEAN ARRAY
+==================================================
+
+boolean[] seen = new boolean[1000];
+
+This creates a boolean array of size 1000.
+
+Initially:
+
+seen[0]     = false
+seen[1]     = false
+seen[2]     = false
+...
+seen[999]   = false
+
+The array is used to remember which numbers we have already encountered.
+
+Why?
+
+Because an unhappy number eventually enters a cycle.
+
+Example:
+
+2 -> 4 -> 16 -> 37 -> 58 -> 89 -> 145 -> 42 -> 20 -> 4
+                                                        |
+                                                        +-- Cycle
+
+When 4 appears again, we know the sequence is repeating.
+
+So we return false.
+
+
+==================================================
+2. while(true)
+==================================================
+
+while(true)
+
+This creates an infinite loop.
+
+The loop will continue until one of these conditions happens:
+
+1. sum == 1
+       -> return true
+
+2. sum has already been seen
+       -> return false
+
+
+==================================================
+3. INITIALIZE sum
+==================================================
+
+int sum = 0;
+
+sum stores the sum of the squares of all digits.
+
+Example:
+
+For 19:
+
+1^2 + 9^2
+= 1 + 81
+= 82
+
+Therefore:
+
+sum = 82
+
+
+==================================================
+4. COPY n INTO temp
+==================================================
+
+int temp = n;
+
+Example:
+
+n = 19
+
+temp = 19
+
+We use temp to extract the digits.
+
+The original n is kept until we calculate the new sum.
+
+
+==================================================
+5. EXTRACTING DIGITS
+==================================================
+
+while(temp > 0)
+{
+    sum += Math.pow(temp % 10, 2);
+    temp = temp / 10;
+}
+
+This loop extracts every digit one by one.
+
+
+--------------------------------------------------
+temp % 10
+--------------------------------------------------
+
+temp % 10 gives the last digit.
+
+Example:
+
+19 % 10 = 9
+
+1 % 10 = 1
+
+So for 19:
+
+19
+ |
+ | % 10
+ v
+9
+
+Then:
+
+19 / 10 = 1
+
+
+Next:
+
+1
+|
+| % 10
+v
+1
+
+Then:
+
+1 / 10 = 0
+
+The loop stops because:
+
+temp > 0
+
+becomes:
+
+0 > 0
+
+which is false.
+
+
+==================================================
+6. Math.pow()
+==================================================
+
+Math.pow(temp % 10, 2)
+
+This calculates:
+
+digit^2
+
+Example:
+
+Math.pow(9, 2)
+= 9^2
+= 81
+
+For 19:
+
+9^2 + 1^2
+= 81 + 1
+= 82
+
+
+==================================================
+7. COMPLETE EXAMPLE: n = 19
+==================================================
+
+START:
+
+n = 19
+
+Calculate:
+
+19
+
+9^2 = 81
+1^2 = 1
+
+sum = 81 + 1
+    = 82
+
+So:
+
+19 -> 82
+
+
+--------------------------------------------------
+Next iteration
+--------------------------------------------------
+
+n = 82
+
+8^2 = 64
+2^2 = 4
+
+sum = 64 + 4
+    = 68
+
+So:
+
+82 -> 68
+
+
+--------------------------------------------------
+Next iteration
+--------------------------------------------------
+
+n = 68
+
+6^2 = 36
+8^2 = 64
+
+sum = 36 + 64
+    = 100
+
+So:
+
+68 -> 100
+
+
+--------------------------------------------------
+Next iteration
+--------------------------------------------------
+
+n = 100
+
+1^2 = 1
+0^2 = 0
+0^2 = 0
+
+sum = 1 + 0 + 0
+    = 1
+
+So:
+
+100 -> 1
+
+
+Now:
+
+if(sum == 1)
+    return true;
+
+
+Therefore:
+
+19 -> 82 -> 68 -> 100 -> 1
+
+             HAPPY NUMBER
+                  ✓
+
+
+==================================================
+8. if(sum == 1)
+==================================================
+
+if(sum == 1)
+    return true;
+
+This checks whether we reached 1.
+
+If yes:
+
+return true;
+
+The number is Happy.
+
+
+==================================================
+9. CHECKING THE ARRAY
+==================================================
+
+if(sum < 1000 && seen[sum])
+    return false;
+
+This checks whether the current sum has already appeared.
+
+There are two conditions:
+
+sum < 1000
+       AND
+seen[sum] == true
+
+
+Why sum < 1000?
+
+Because the array has only 1000 positions:
+
+seen[0] to seen[999]
+
+We must not access:
+
+seen[1000]
+
+or a larger index.
+
+
+==================================================
+10. MARKING A NUMBER AS SEEN
+==================================================
+
+if(sum < 1000)
+    seen[sum] = true;
+
+This marks the current sum as already visited.
+
+Example:
+
+Suppose:
+
+sum = 82
+
+Then:
+
+seen[82] = true
+
+Later:
+
+sum = 68
+
+Then:
+
+seen[68] = true
+
+So the array remembers:
+
+82 -> already seen
+68 -> already seen
+
+
+==================================================
+11. n = sum
+==================================================
+
+n = sum;
+
+The newly calculated sum becomes the next number.
+
+Example:
+
+19 -> 82
+
+Therefore:
+
+n = 82
+
+Then:
+
+82 -> 68
+
+Therefore:
+
+n = 68
+
+Then:
+
+68 -> 100
+
+Therefore:
+
+n = 100
+
+
+==================================================
+12. UNHAPPY NUMBER EXAMPLE
+==================================================
+
+Let's take:
+
+n = 2
+
+
+Step 1:
+
+2
+
+2^2 = 4
+
+2 -> 4
+
+
+Step 2:
+
+4
+
+4^2 = 16
+
+4 -> 16
+
+
+Step 3:
+
+16
+
+1^2 + 6^2
+= 1 + 36
+= 37
+
+16 -> 37
+
+
+Continue:
+
+37 -> 58
+58 -> 89
+89 -> 145
+145 -> 42
+42 -> 20
+20 -> 4
+
+
+Complete sequence:
+
+2
+|
+v
+4
+|
+v
+16
+|
+v
+37
+|
+v
+58
+|
+v
+89
+|
+v
+145
+|
+v
+42
+|
+v
+20
+|
+v
+4
+^
+|
++-------- Already seen!
+
+
+When 4 appears again:
+
+seen[4] == true
+
+Therefore:
+
+return false;
+
+
+So:
+
+2 = NOT A HAPPY NUMBER
+
+
+==================================================
+13. VISUAL OF THE CYCLE
+==================================================
+
+2 -> 4 -> 16 -> 37 -> 58 -> 89
+    ^                         |
+    |                         v
+    |                        145
+    |                         |
+    |                         v
+    |                         42
+    |                         |
+    |                         v
+    +------------------------ 20
+
+The sequence eventually returns to 4.
+
+Therefore, it will continue forever:
+
+4 -> 16 -> 37 -> 58 -> ...
+                         |
+                         +--> 4 -> 16 -> ...
+
+
+The boolean array detects this repeated value.
+
+
+==================================================
+14. COMPLETE FLOW OF THE CODE
+==================================================
+
+                    n
+                    |
+                    v
+              temp = n
+                    |
+                    v
+              sum = 0
+                    |
+                    v
+             Extract each digit
+                    |
+                    v
+             Square each digit
+                    |
+                    v
+            Add to sum
+                    |
+                    v
+              Is sum == 1?
+                /       \
+              YES        NO
+               |          |
+               v          v
+         return true    sum < 1000
+                           |
+                           v
+                     seen[sum] ?
+                       /       \
+                     YES        NO
+                      |          |
+                      v          v
+               return false  seen[sum] = true
+                                  |
+                                  v
+                                n = sum
+                                  |
+                                  v
+                                REPEAT
+
+
+==================================================
+15. WHAT EACH IMPORTANT LINE DOES
+==================================================
+
+boolean[] seen = new boolean[1000];
+
+-> Creates an array to remember previously
