@@ -1,0 +1,826 @@
+Given two integers n and k, return all possible combinations of k numbers chosen from the range [1, n].
+
+You may return the answer in any order.
+
+ 
+
+Example 1:
+
+Input: n = 4, k = 2
+Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]
+Explanation: There are 4 choose 2 = 6 total combinations.
+Note that combinations are unordered, i.e., [1,2] and [2,1] are considered to be the same combination.
+Example 2:
+
+Input: n = 1, k = 1
+Output: [[1]]
+Explanation: There is 1 choose 1 = 1 total combination.
+ 
+
+Constraints:
+
+1 <= n <= 20
+1 <= k <= n
+
+C++ SOLUTION:
+class Solution {
+public:
+void bt(int n,int k,int st,vector<int>&current,vector<vector<int>>&res)
+        {
+            if(current.size()==k)
+            {
+                res.push_back(current);
+                return;
+            }
+            for(int i=st;i<=n;i++)
+            {
+                current.push_back(i);
+                bt(n,k,i+1,current,res);
+                current.pop_back();
+            }
+        }
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>>res;
+        vector<int>current;
+         bt(n, k, 1,current,res);
+         return res;
+    }
+};
+
+EXPLAINATION:
+Backtracking for Combinations — Complete Explanation
+Problem
+
+Given two integers n and k, return all possible combinations of k numbers chosen from the range [1, n].
+
+Example
+Input:
+n = 4
+k = 2
+
+Output:
+[[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]
+
+We need to choose 2 numbers from:
+
+1  2  3  4
+
+Order does not matter.
+
+So:
+
+[1,2] = [2,1]
+
+Therefore, we only generate [1,2] and never [2,1].
+
+1. The Main Idea
+
+This problem can be solved using Backtracking.
+
+Backtracking means:
+
+Choose
+  ↓
+Explore
+  ↓
+Undo the choice
+  ↓
+Try another choice
+
+The three most important lines are:
+
+current.push_back(i);
+bt(n, k, i + 1);
+current.pop_back();
+
+Think of them as:
+
+PICK → GO DEEPER → UNPICK
+2. What Are We Trying to Build?
+
+Suppose:
+
+n = 4
+k = 2
+
+We need to build combinations of size 2.
+
+Start with nothing:
+
+[]
+
+Choose 1:
+
+[1]
+
+Now choose something after 1:
+
+[1,2]
+[1,3]
+[1,4]
+
+Then start with 2:
+
+[2,3]
+[2,4]
+
+Then start with 3:
+
+[3,4]
+
+So the final answer is:
+
+[1,2]
+[1,3]
+[1,4]
+[2,3]
+[2,4]
+[3,4]
+3. Why Do We Need current?
+
+We need a temporary vector to store the combination that we are currently building.
+
+vector<int> current;
+
+For example:
+
+current = []
+
+Choose 1:
+
+current = [1]
+
+Choose 3:
+
+current = [1,3]
+
+Now we have k = 2 numbers, so [1,3] is a complete combination.
+
+We copy it into res:
+
+res.push_back(current);
+4. Why Do We Need res?
+
+res stores all completed combinations.
+
+vector<vector<int>> res;
+
+For example, after finding some combinations:
+
+res =
+[
+    [1,2],
+    [1,3],
+    [1,4]
+]
+
+Each current is one row inside res.
+
+Think of it like:
+
+res
+ |
+ +-- [1,2]
+ |
+ +-- [1,3]
+ |
+ +-- [1,4]
+ |
+ +-- [2,3]
+ |
+ +-- ...
+5. Understanding the bt() Function
+
+The function is:
+
+void bt(int n, int k, int st)
+
+It has 3 parameters.
+
+n
+
+The maximum number we can choose.
+
+Example:
+
+n = 4
+
+Available numbers:
+1 2 3 4
+k
+
+How many numbers we need in each combination.
+
+Example:
+
+k = 2
+
+Each combination must contain 2 numbers.
+st
+
+Where we should start looking for the next number.
+
+This is extremely important for avoiding duplicates.
+
+6. The Complete bt() Function
+void bt(int n, int k, int st) {
+    if (current.size() == k) {
+        res.push_back(current);
+        return;
+    }
+
+    for (int i = st; i <= n; i++) {
+        current.push_back(i);
+        bt(n, k, i + 1);
+        current.pop_back();
+    }
+}
+
+Now let's understand it line by line.
+
+7. Base Case
+if (current.size() == k) {
+    res.push_back(current);
+    return;
+}
+
+This means:
+
+If we have selected k numbers, we have completed one combination.
+
+Suppose:
+
+k = 2
+
+and:
+
+current = [1,3]
+
+Then:
+
+current.size() = 2
+k = 2
+
+Therefore:
+
+2 == 2
+
+We have a valid combination.
+
+So:
+
+res.push_back(current);
+
+adds:
+
+[1,3]
+
+to the answer.
+
+Then:
+
+return;
+
+stops this particular path.
+
+8. The for Loop
+for (int i = st; i <= n; i++)
+
+This tries every number from st to n.
+
+Suppose:
+
+n = 4
+st = 1
+
+Then:
+
+i = 1
+i = 2
+i = 3
+i = 4
+
+We try each one as a possible choice.
+
+9. Choosing a Number
+current.push_back(i);
+
+This means:
+
+Add i to the current combination.
+
+Initially:
+
+current = []
+
+If:
+
+i = 1
+
+then:
+
+current = [1]
+
+If we then choose 3:
+
+current = [1,3]
+10. The Recursive Call
+bt(n, k, i + 1);
+
+This is the most important part.
+
+Suppose we selected:
+
+i = 1
+
+Then:
+
+bt(n, k, 2);
+
+Why 2?
+
+Because we don't want to use 1 again.
+
+We already selected 1.
+
+We need to choose a number after 1.
+
+So:
+
+1 → 2,3,4
+
+If we selected 3:
+
+bt(n, k, 4);
+
+because now we only want numbers after 3.
+
+3 → 4
+11. Why i + 1 Prevents Duplicates
+
+Suppose we didn't use i + 1.
+
+We might generate:
+
+[1,2]
+[2,1]
+
+But these are the same combination.
+
+We only want:
+
+[1,2]
+
+Using:
+
+bt(n, k, i + 1);
+
+forces the numbers to be selected in increasing order.
+
+Therefore:
+
+1 → 2 → 3 → 4
+
+and never:
+
+2 → 1
+3 → 1
+4 → 2
+
+This automatically removes duplicates.
+
+12. The pop_back() — Backtracking
+
+After the recursive call:
+
+current.pop_back();
+
+This removes the last number we selected.
+
+Why?
+
+Because we've finished exploring all possibilities that start with that choice.
+
+Example:
+
+current = [1,2]
+
+We finish exploring [1,2].
+
+Now:
+
+current.pop_back();
+
+gives:
+
+current = [1]
+
+Now we can try:
+
+[1,3]
+
+Then:
+
+[1,4]
+
+This is the actual backtracking step.
+
+13. Visualizing Backtracking
+
+For:
+
+n = 4
+k = 2
+
+The recursion can be visualized as:
+
+                         []
+                 /       |       |       \
+                1        2       3        4
+              / | \      / \      |
+             2  3  4    3   4     4
+
+The completed combinations are:
+
+[1,2]
+[1,3]
+[1,4]
+
+[2,3]
+[2,4]
+
+[3,4]
+14. Full Execution Trace
+
+Let's trace:
+
+n = 4
+k = 2
+
+We start with:
+
+current = []
+res = []
+
+Call:
+
+bt(4,2,1)
+Step 1: Choose 1
+current = [1]
+
+Call:
+
+bt(4,2,2)
+Step 2: Choose 2
+current = [1,2]
+
+Now:
+
+current.size() == k
+2 == 2
+
+So:
+
+res = [[1,2]]
+
+Return.
+
+Then:
+
+pop 2
+
+Now:
+
+current = [1]
+Step 3: Choose 3
+current = [1,3]
+
+We found another combination:
+
+res = [
+    [1,2],
+    [1,3]
+]
+
+Return.
+
+Backtrack:
+
+current = [1]
+Step 4: Choose 4
+current = [1,4]
+
+Add it:
+
+res = [
+    [1,2],
+    [1,3],
+    [1,4]
+]
+
+Backtrack:
+
+current = [1]
+
+No more choices after 4.
+
+So we return to the previous level.
+
+15. Now Start With 2
+
+After completely exploring everything starting with 1:
+
+current = []
+
+Now:
+
+i = 2
+
+Choose it:
+
+current = [2]
+
+Then start from:
+
+3
+
+because:
+
+i + 1 = 3
+
+We get:
+
+[2,3]
+[2,4]
+
+So:
+
+res =
+[
+    [1,2],
+    [1,3],
+    [1,4],
+    [2,3],
+    [2,4]
+]
+16. Finally Start With 3
+current = [3]
+
+Only 4 is available:
+
+current = [3,4]
+
+Add it:
+
+res =
+[
+    [1,2],
+    [1,3],
+    [1,4],
+    [2,3],
+    [2,4],
+    [3,4]
+]
+
+Done.
+
+17. Understanding combine()
+
+The combine() function is very simple.
+
+vector<vector<int>> combine(int n, int k) {
+    bt(n, k, 1);
+    return res;
+}
+
+Its job is basically:
+
+START → BACKTRACK → RETURN ANSWER
+First:
+bt(n, k, 1);
+
+Start the backtracking from number 1.
+
+Then:
+return res;
+
+Return all the combinations that bt() found.
+
+18. Complete Code
+class Solution {
+public:
+    vector<vector<int>> res;
+    vector<int> current;
+
+    void bt(int n, int k, int st) {
+        if (current.size() == k) {
+            res.push_back(current);
+            return;
+        }
+
+        for (int i = st; i <= n; i++) {
+            current.push_back(i);
+            bt(n, k, i + 1);
+            current.pop_back();
+        }
+    }
+
+    vector<vector<int>> combine(int n, int k) {
+        bt(n, k, 1);
+        return res;
+    }
+};
+19. Example Where k = 3
+
+Now let's see why recursion is better than using multiple for loops.
+
+n = 4
+k = 3
+
+We need:
+
+[1,2,3]
+[1,2,4]
+[1,3,4]
+[2,3,4]
+
+The recursion tree is:
+
+                         []
+                    /    |    |    \
+                   1     2    3     4
+                 / | \   / \
+                2  3  4 3   4
+               / \  |
+              3   4  4
+
+The valid paths are:
+
+1 → 2 → 3    = [1,2,3]
+1 → 2 → 4    = [1,2,4]
+1 → 3 → 4    = [1,3,4]
+2 → 3 → 4    = [2,3,4]
+
+Notice something important:
+
+We didn't write:
+
+for
+    for
+        for
+
+Instead, recursion automatically creates the required levels.
+
+20. Why Not Just Use for Loops?
+
+For k = 2, you could do:
+
+for (int i = 1; i <= n; i++) {
+    for (int j = i + 1; j <= n; j++) {
+        res.push_back({i, j});
+    }
+}
+
+But for k = 3, you'd need:
+
+for
+    for
+        for
+
+For k = 4:
+
+for
+    for
+        for
+            for
+
+And k can be anywhere from 1 to n.
+
+Therefore, we don't know how many loops we need.
+
+Recursion solves this problem.
+
+21. The Most Important Pattern
+
+Whenever you see a backtracking problem involving choosing things, remember:
+
+current.push_back(i);
+
+bt(...);
+
+current.pop_back();
+
+Visual:
+
+              START
+                |
+                v
+             CHOOSE
+                |
+                v
+             EXPLORE
+                |
+                v
+               DONE
+                |
+                v
+              UNDO
+                |
+                v
+          TRY NEXT CHOICE
+
+Or:
+
+PICK
+ ↓
+RECURSE
+ ↓
+POP
+22. What Each Variable Does
+Variable	Purpose
+n	Maximum number
+k	Required combination size
+st	Starting number for the current level
+i	Current number being tried
+current	Combination currently being built
+res	All completed combinations
+23. One-Line Understanding of Each Part
+vector<vector<int>> res;
+
+Stores all answers.
+
+vector<int> current;
+
+Stores the combination currently being built.
+
+if (current.size() == k)
+
+Checks whether the combination is complete.
+
+res.push_back(current);
+
+Saves the completed combination.
+
+for (int i = st; i <= n; i++)
+
+Tries every possible next number.
+
+current.push_back(i);
+
+Chooses a number.
+
+bt(n, k, i + 1);
+
+Finds the next number recursively.
+
+current.pop_back();
+
+Undo the choice and try another number.
+
+bt(n, k, 1);
+
+Starts the process.
+
+return res;
+
+Returns the final answer.
+
+24. The Key Concept to Remember
+
+Don't try to memorize the entire code.
+
+Remember this thought process:
+
+I need k numbers.
+
+Start with nothing.
+
+Choose a number.
+
+Then choose another number after it.
+
+Keep doing this until I have k numbers.
+
+Save that combination.
+
+Go backward.
+
+Remove the last number.
+
+Try another number.
+
+In code:
+
+Choose
+  ↓
+current.push_back(i)
+
+Explore
+  ↓
+bt(n, k, i + 1)
+
+Undo
+  ↓
+current.pop_back()
+
+That's backtracking.
