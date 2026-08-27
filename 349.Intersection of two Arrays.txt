@@ -1,0 +1,57 @@
+JAVA SOLUTION:
+USING HASHSET METHOD
+import java.util.HashSet;
+
+class Solution {
+    public int[] intersection(int[] nums1, int[] nums2) {
+        // 1. Add all elements of nums1 to a HashSet to remove duplicates and allow fast searching
+        HashSet<Integer> set1 = new HashSet<>();
+        for (int i = 0; i < nums1.length; i++) {
+            set1.add(nums1[i]);
+        }
+        
+        // 2. Use a second HashSet to store the unique common elements
+        HashSet<Integer> intersectSet = new HashSet<>();
+        for (int i = 0; i < nums2.length; i++) {
+            // .contains() is the HashSet equivalent of what you were trying to do with .indexOf()
+            if (set1.contains(nums2[i])) {
+                intersectSet.add(nums2[i]);
+            }
+        }
+        
+        // 3. Convert the flexible HashSet back into a standard primitive array for the final answer
+        int[] result = new int[intersectSet.size()];
+        int index = 0;
+        for (int num : intersectSet) {
+            result[index++] = num;
+        }
+        
+        return result;
+    }
+}
+
+C++ SOLUTION:
+NORMAL ITERATIVE METHOD
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        vector<int>res;
+        vector<bool>vis(1001,false);
+        for(int i=0;i<nums2.size();i++)
+        {
+            for(int j=0;j<nums1.size();j++)
+            {
+                if(nums2[i]==nums1[j])
+                {
+                    if(!vis[nums2[i]])
+                    {
+                        res.push_back(nums1[j]);
+                        vis[nums1[j]]=true;
+                        break;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+};
