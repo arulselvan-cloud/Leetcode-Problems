@@ -1,0 +1,139 @@
+C++ SOLUTION:
+class Solution {
+public:
+    vector<int> findDuplicates(vector<int>& nums) {
+        vector<int>hash(nums.size()+1,0);
+        vector<int>res;
+        for(int i=0;i<nums.size();i++)
+        {
+            hash[nums[i]]++;
+            if(hash[nums[i]]==2)
+            {
+                  res.push_back(nums[i]);
+            }
+        }
+        return res;
+    }
+};
+JAVA SOLUTION:
+class Solution {
+    public List<Integer> findDuplicates(int[] nums) {
+         ArrayList<Integer>arr = new ArrayList<>();
+         for(int i=0;i<nums.length;i++)
+         {
+            int index=Math.abs(nums[i])-1;
+            if(nums[index]<0)
+            {
+                arr.add(Math.abs(nums[i]));
+            }
+            else
+            {
+                nums[index]=-nums[index];
+            }
+         }
+         return arr;
+    }
+}
+
+
+EXPLAINATION:
+====================================================================
+PROBLEM: FIND ALL DUPLICATES IN AN ARRAY
+====================================================================
+
+APPROACH: The "Index Marking" (Negation) Technique
+Time Complexity: O(N) | Auxiliary Space: O(1)
+
+Since all numbers in the array are strictly in the range [1, N] 
+(where N is the size of the array), we can use the values of the 
+array itself as INDICES to mark which numbers we have visited. 
+
+For every number 'x' we encounter:
+1. Find its corresponding index: index = abs(x) - 1.
+2. Look at the value located at nums[index].
+3. If nums[index] is POSITIVE: We haven't seen 'x' before. 
+   Mark it as seen by making nums[index] NEGATIVE.
+4. If nums[index] is NEGATIVE: We HAVE seen 'x' before. 
+   This means 'x' is a duplicate. Add 'x' to the result list.
+
+--------------------------------------------------------------------
+VISUALIZATION & STEP-BY-STEP EXAMPLE
+--------------------------------------------------------------------
+Input Array: nums = [4, 3, 2, 7, 8, 2, 3, 1]
+Result List: []
+
+STEP 1: i = 0 | Current Value = 4
+- The index for 4 is: (4 - 1) = 3
+- Check nums[3]: It is 7 (Positive)
+- Action: Negate nums[3].
+- Array state: [4, 3, 2, -7, 8, 2, 3, 1]
+
+STEP 2: i = 1 | Current Value = 3
+- The index for 3 is: (3 - 1) = 2
+- Check nums[2]: It is 2 (Positive)
+- Action: Negate nums[2].
+- Array state: [4, 3, -2, -7, 8, 2, 3, 1]
+
+STEP 3: i = 2 | Current Value = -2 (Use Absolute Value -> 2)
+- The index for 2 is: (2 - 1) = 1
+- Check nums[1]: It is 3 (Positive)
+- Action: Negate nums[1].
+- Array state: [4, -3, -2, -7, 8, 2, 3, 1]
+
+STEP 4: i = 3 | Current Value = -7 (Use Absolute Value -> 7)
+- The index for 7 is: (7 - 1) = 6
+- Check nums[6]: It is 3 (Positive)
+- Action: Negate nums[6].
+- Array state: [4, -3, -2, -7, 8, 2, -3, 1]
+
+STEP 5: i = 4 | Current Value = 8
+- The index for 8 is: (8 - 1) = 7
+- Check nums[7]: It is 1 (Positive)
+- Action: Negate nums[7].
+- Array state: [4, -3, -2, -7, 8, 2, -3, -1]
+
+STEP 6: i = 5 | Current Value = 2
+- The index for 2 is: (2 - 1) = 1
+- Check nums[1]: It is -3 (NEGATIVE!)
+- Action: We already negated this index, meaning we've seen 2 before.
+- Add 2 to Result List -> Result = [2]
+- Array state: [4, -3, -2, -7, 8, 2, -3, -1]
+
+STEP 7: i = 6 | Current Value = -3 (Use Absolute Value -> 3)
+- The index for 3 is: (3 - 1) = 2
+- Check nums[2]: It is -2 (NEGATIVE!)
+- Action: We already negated this index, meaning we've seen 3 before.
+- Add 3 to Result List -> Result = [2, 3]
+- Array state: [4, -3, -2, -7, 8, 2, -3, -1]
+
+STEP 8: i = 7 | Current Value = -1 (Use Absolute Value -> 1)
+- The index for 1 is: (1 - 1) = 0
+- Check nums[0]: It is 4 (Positive)
+- Action: Negate nums[0].
+- Array state: [-4, -3, -2, -7, 8, 2, -3, -1]
+
+Final Result: [2, 3]
+
+--------------------------------------------------------------------
+JAVA CODE TEMPLATE
+--------------------------------------------------------------------
+class Solution {
+    public List<Integer> findDuplicates(int[] nums) {
+        ArrayList<Integer> arr = new ArrayList<>();
+        
+        for (int i = 0; i < nums.length; i++) {
+            // Get the absolute value to handle already-negated numbers
+            int index = Math.abs(nums[i]) - 1;
+            
+            // If the value at this index is negative, it's a duplicate
+            if (nums[index] < 0) {
+                arr.add(Math.abs(nums[i]));
+            } else {
+                // Mark the number as visited by negating it
+                nums[index] = -nums[index];
+            }
+        }
+        
+        return arr;
+    }
+}
