@@ -1,0 +1,99 @@
+C++ SOLUTION:
+#include <vector>
+#include <unordered_set>
+#include <algorithm>
+
+class Solution {
+public:
+    int distributeCandies(std::vector<int>& candyType) {
+        std::unordered_set<int> uniqueCandies(candyType.begin(), candyType.end());
+        int maxAllowed = candyType.size() / 2;
+        return std::min(uniqueCandies.size(), (size_t)maxAllowed);
+    }
+};
+
+JAVA SOLUTION:
+class Solution {
+    public int distributeCandies(int[] candyType) {
+       Set<Integer>uniqueCandies=new HashSet<>();
+       for(int candy:candyType)
+       {
+        uniqueCandies.add(candy);
+       }
+       int maxAlotted=candyType.length/2;
+       return Math.min(uniqueCandies.size(),maxAlotted);
+    }
+}
+
+EXPLAINATION:
+Core Concept:
+Alice has n candies, and her brother gives her half of them (n / 2). Each candy has an integer type. The goal is to find the maximum number of unique candy types Alice can eat, given that she can consume at most n / 2 candies in total.
+
+The answer is always the smaller of these two values:
+
+The total number of unique candy types available.
+
+The maximum limit of candies she is allowed to eat (n / 2).
+
+C++ Solution Breakdown
+
+#include 
+#include <unordered_set>
+#include
+
+class Solution {
+public:
+int distributeCandies(std::vector& candyType) {
+// Step 1: Insert all elements into an unordered_set to extract unique types
+std::unordered_set uniqueCandies(candyType.begin(), candyType.end());
+
+    // Step 2: Calculate the maximum number of candies Alice is allowed to eat
+    int maxAllowed = candyType.size() / 2;
+    
+    // Step 3: Return the smaller of the unique types count and maxAllowed limit
+    return std::min(uniqueCandies.size(), (size_t)maxAllowed);
+}
+};
+
+Explanation:
+
+std::unordered_set: Automatically filters out duplicate elements, leaving only the unique candy types.
+
+candyType.size() / 2: Computes the capacity limit of how many total candies Alice can eat.
+
+std::min(...): Compares the unique count with the allowed limit and returns the constraining boundary.
+
+Java Solution Breakdown
+
+import java.util.HashSet;
+import java.util.Set;
+
+class Solution {
+public int distributeCandies(int[] candyType) {
+// Step 1: Add all elements to a HashSet to get unique candy types
+Set uniqueCandies = new HashSet<>();
+for (int candy : candyType) {
+uniqueCandies.add(candy);
+}
+
+    // Step 2: Calculate the maximum number of candies Alice is allowed to eat
+    int maxAllowed = candyType.length / 2;
+    
+    // Step 3: Return the smaller of the unique types count and the allowed limit
+    return Math.min(uniqueCandies.size(), maxAllowed);
+}
+}
+
+Explanation:
+
+new HashSet<>(): A collection that stores only unique elements, ignoring duplicate values.
+
+candyType.length / 2: Computes the maximum capacity limit for Alice.
+
+Math.min(...): Ensures we return the smaller value between total unique types and the allowed portion.
+
+Complexity Analysis (Both Languages):
+
+Time Complexity: O(n) - We loop through the array once to insert elements into the hash set.
+
+Space Complexity: O(n) - In the worst case where all elements are unique, the hash set stores up to n items.
